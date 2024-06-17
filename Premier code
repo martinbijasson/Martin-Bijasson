@@ -1,0 +1,36 @@
+# ceci est une esquisse de code plutot pour avoir une premiere idee de code pour jouer blackjack 
+import random # dans ton terminal : "pip install random"
+
+# Définition des cartes
+nb_paquet = 3
+jeu = [(couleur, chiffre) for couleur in range(4) for chiffre in range(1, 14) for _ in range(nb_paquet)]
+
+def tirer(n):
+    global jeu
+    if n > len(jeu):
+        raise ValueError("Demande de plus de cartes qu'il n'en existe dans le jeu.")
+    
+    liste = []
+    for _ in range(n):
+        choix = random.choice(jeu)
+        liste.append(choix)
+        jeu.remove(choix)  # Supprimer le tirage pour éviter les doublons et modifier le jeu
+
+    return liste
+
+def blackjack(n):
+    cartes_tirées = tirer(n * 2 + 1)  # Tirer suffisamment de cartes pour tous les joueurs plus le croupier
+    personnes = [[] for _ in range(n+1)]  # n joueurs + 1 croupier
+    for _ in range(2):
+        carte_croupier = cartes_tirées.pop()  # La dernière carte pour le croupier
+        personnes[-1].append(carte_croupier)
+    
+    for i in range(n):
+        personnes[i].extend(cartes_tirées[i*2:(i+1)*2])
+    
+    return personnes
+
+# Affichage du jeu avant et après une partie de blackjack pour 3 joueurs
+print("Jeu avant:", len(jeu))
+print(blackjack(3))
+print("Jeu après:", len(jeu))
